@@ -9,6 +9,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.support.SimpleJobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemReader;
@@ -41,22 +42,32 @@ public class BatchConfig {
     private DataSource dataSource;
 
     @Bean
+    public JobBuilder jobBuilder() {
+        return new JobBuilder("testing"); // Job Repository as second parameter
+    }
+    @Bean
+    public StepBuilder stepBuilder(){
+        return new StepBuilder("testStep"); // Job Repository as second parameter
+    }
+
+    @Bean
     public Job sampleJob(Step step){
         return jobs.start(step).build();
     }
 
     @Bean
     public Step stepOne() throws Exception {
-        Resource resource = new PathResource("resources/transaction.csv");
+
         return steps.<Transaction,Transaction>chunk(100)
                 .reader(itemReader())
-                .writer(itemWriter(resource))
+                .writer(itemWriter())
                 .build();
     }
 
     @Bean
     @StepScope
-    public FlatFileItemWriter<Transaction> itemWriter(Resource outputResource) throws Exception{
+    public FlatFileItemWriter<Transaction> itemWriter() throws Exception{
+        WritableResource resource = new PathResource("resources/transaction.csv");
         BeanWrapperFieldExtractor<Transaction> fieldExtractor = new BeanWrapperFieldExtractor<>();
         fieldExtractor.setNames(new String[] {"transaction_reference","amount","currency","transaction_id","from_acc_id","to_acc_id"});
         fieldExtractor.afterPropertiesSet();
@@ -67,7 +78,7 @@ public class BatchConfig {
 
         return new FlatFileItemWriterBuilder<Transaction>()
                 .name("transactionWriter")
-                .resource((WritableResource) outputResource)
+                .resource(resource)
                 .lineAggregator(lineAggregator)
                 .build();
     }
