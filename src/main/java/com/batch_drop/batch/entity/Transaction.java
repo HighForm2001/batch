@@ -1,6 +1,5 @@
 package com.batch_drop.batch.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +22,6 @@ public class Transaction {
     private double amount;
     private String currency;
     @Column(name = "transaction_id")
-//    private int transactionID;
     private int transaction_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,18 +35,12 @@ public class Transaction {
     @Column(name = "transaction_date")
     private LocalDateTime transaction_date;
 
-    public void setTransaction_date(){
-        this.transaction_date = LocalDateTime.now();
-    }
-    public void setTransaction_date(LocalDateTime time){
-        this.transaction_date = time;
-    }
     public LocalDate getDate(){
         return transaction_date.toLocalDate();
     }
 
 
-
-
-
+    public void setTransaction_date(LocalDateTime toLocalDateTime) {
+        this.transaction_date = toLocalDateTime;
+    }
 }

@@ -9,21 +9,24 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    private static final String password = "Password";
+    static{
+        System.setProperty(password,"1234");
+    }
+    private static final String username = "postgres";
+    private static final String db_name = "transaction_db";
+    private static String db_link = "127.0.0.1";
 
-    private final String username = "postgres";
-    private final String password = "1234";
-    private final String db_name = "transaction_db";
-    private final String db_link = "127.0.0.1";
 //    private final String db_link = "localhost";
 
-    private final String port = "5432";
+    private static final String port = "5432";
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
                 .url("jdbc:postgresql://"+db_link+":" + port +"/"+db_name)
                 .username(username)
-                .password(password)
+                .password(System.getProperty(password))
                 .build();
     }
 
