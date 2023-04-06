@@ -1,9 +1,11 @@
-package com.batch_drop.batch.processor;
+package com.batch_drop.batch.components;
 
 import com.batch_drop.batch.entity.Transaction;
 import com.batch_drop.batch.entity.TransactionReport;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TransactionReportProcessor
         implements ItemProcessor<Transaction, TransactionReport> {
     @Override
